@@ -1,0 +1,100 @@
+﻿@model IEnumerable<GoogleDriveRestAPI_v3.Models.GoogleDriveFiles>
+@{
+    ViewBag.Title = "Google Drive API v3 - ASP.NET MVC 5";
+
+
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<div class="container-md">
+    <div class="row">
+        <h2>Google Drive encryption </h2>
+
+
+<style type="text/css">
+
+</style>
+
+<center>
+    <div style="width:80%; text-align:left;">
+        @using (Html.BeginForm("UploadFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" ,@class = "form-controll"}))
+        {
+            <p>
+                <label for="file">Upload file:</label>
+                <input class="form-controll" type="file" name="file" id="file" />
+                <input class="btn btn-primary" type="submit" value="Upload && encryption  " />
+            </p>
+        }
+    </div>
+
+    <table class="table table-striped" border="1">
+        <tr id="header">
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Size)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedTime)
+            </th>
+            <th>
+               
+            </th>
+            <th>
+               
+            </th>
+        </tr>
+
+        @if (Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                <tr id="layouttable">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @{
+                            long? KiloByte = @item.Size / 1024;
+                            string NewSize = KiloByte + " KB";
+                        }
+                        @NewSize
+                    </td>
+
+                    <td>
+                        @string.Format("{0: MM/dd/yyyy}", Convert.ToDateTime(Html.DisplayFor(modelItem => item.CreatedTime).ToString()))
+                    </td>
+                    <td>
+                        <input type="button" class="DownloadFile btn btn-success" value="Decrypt & Download" data-key=@item.Id style="align-content:center" />
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("DeleteFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <input type="hidden" name=Id value="@item.Id">
+                            <input type="submit" class="DeleteFile btn btn-danger" value="Delete" style="align-content:center" />
+                        }
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <td colspan="6">No files found</td>
+        }
+
+    </table>
+
+</center>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+ <script>
+    $(document).on('click', '.DownloadFile', function () {
+        debugger;
+        var fileId = $(this).attr("data-key");
+        window.location.href = '/Home/DownloadFile/' + fileId;
+       
+    });
+</script>
+
+        </div></div>
